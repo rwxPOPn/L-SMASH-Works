@@ -1033,6 +1033,7 @@ vs_video_output_handler_t *vs_allocate_video_output_handler
 
 void vs_set_frame_properties
 (
+    int             n,
     AVFrame        *av_frame,
     AVStream       *stream,
     int64_t         duration_num,
@@ -1042,6 +1043,7 @@ void vs_set_frame_properties
 )
 {
     VSMap *props = vsapi->getFramePropsRW( vs_frame );
+    vsapi->propSetInt( props, "_FrameNumber", n, paReplace );
     /* Sample aspect ratio */
     vsapi->propSetInt( props, "_SARNum", av_frame->sample_aspect_ratio.num, paReplace );
     vsapi->propSetInt( props, "_SARDen", av_frame->sample_aspect_ratio.den, paReplace );

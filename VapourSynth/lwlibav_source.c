@@ -156,6 +156,7 @@ static void VS_CC vs_filter_init( VSMap *in, VSMap *out, void **instance_data, V
 
 static void set_frame_properties
 (
+    int          n,
     VSVideoInfo *vi,
     AVFrame     *av_frame,
     AVStream    *stream,
@@ -166,7 +167,7 @@ static void set_frame_properties
     /* Variable Frame Rate is not supported yet. */
     int64_t duration_num = vi->fpsDen;
     int64_t duration_den = vi->fpsNum;
-    vs_set_frame_properties( av_frame, stream, duration_num, duration_den, vs_frame, vsapi );
+    vs_set_frame_properties( n, av_frame, stream, duration_num, duration_den, vs_frame, vsapi );
 }
 
 static int prepare_video_decoding
@@ -259,7 +260,7 @@ static const VSFrameRef *VS_CC vs_filter_get_frame( int n, int activation_reason
         vsapi->setFilterError( "lsmas: failed to output a video frame.", frame_ctx );
         return NULL;
     }
-    set_frame_properties( vi, av_frame, vdhp->format->streams[vdhp->stream_index], vs_frame, vsapi );
+    set_frame_properties( n, vi, av_frame, vdhp->format->streams[vdhp->stream_index], vs_frame, vsapi );
     return vs_frame;
 }
 

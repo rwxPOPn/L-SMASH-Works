@@ -148,6 +148,7 @@ static void get_sample_duration
 static void set_frame_properties
 (
     libavsmash_video_decode_handler_t *vdhp,
+    int                                n,
     VSVideoInfo                       *vi,
     AVFrame                           *av_frame,
     VSFrameRef                        *vs_frame,
@@ -158,7 +159,7 @@ static void set_frame_properties
     int64_t duration_num;
     int64_t duration_den;
     get_sample_duration( vdhp, vi, sample_number, &duration_num, &duration_den );
-    vs_set_frame_properties( av_frame, NULL, duration_num, duration_den, vs_frame, vsapi );
+    vs_set_frame_properties( n, av_frame, NULL, duration_num, duration_den, vs_frame, vsapi );
 }
 
 static int prepare_video_decoding
@@ -272,7 +273,7 @@ static const VSFrameRef *VS_CC vs_filter_get_frame( int n, int activation_reason
         vsapi->setFilterError( "lsmas: failed to output a video frame.", frame_ctx );
         return NULL;
     }
-    set_frame_properties( vdhp, vi, av_frame, vs_frame, sample_number, vsapi );
+    set_frame_properties( vdhp, n, vi, av_frame, vs_frame, sample_number, vsapi );
     return vs_frame;
 }
 
