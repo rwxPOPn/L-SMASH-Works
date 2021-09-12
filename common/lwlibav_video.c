@@ -196,6 +196,15 @@ void lwlibav_video_set_get_buffer_func
     vdhp->exh.get_buffer = vdhp->ctx->get_buffer2;
 }
 
+void lwlibav_video_set_soft_reset
+(
+    lwlibav_video_decode_handler_t *vdhp,
+    int                             soft_reset
+)
+{
+    vdhp->soft_reset = soft_reset;
+}
+
 /*****************************************************************************
  * Getters
  *****************************************************************************/
