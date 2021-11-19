@@ -374,6 +374,7 @@ VSPresetFormat get_vs_output_pixel_format( const char *format_name )
     for( int i = 0; format_table[i].format_name; i++ )
         if( strcasecmp( format_name, format_table[i].format_name ) == 0 )
             return format_table[i].vs_output_pixel_format;
+    fprintf( stderr, "lsmas: unable to recognize format \"%s\", ignored.\n", format_name );
     return pfNone;
 }
 
