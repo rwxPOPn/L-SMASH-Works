@@ -73,6 +73,7 @@ typedef struct
                                                  * 1: either VC-1 or WMV3
                                                  * 2: either VC-1 or WMV3 encapsulated in ASF */
     int                         already_decoded;
+    int                         random_access_key_frame; /* if 1, then we know the stream contains Recovery Point SEI, and we will only recognize a key frame if parser_ctx->key_frame > 1. */
     int (*decode)(AVCodecContext *, AVFrame *, int *, AVPacket * );
 } lwindex_helper_t;
 
@@ -1736,6 +1737,19 @@ static int get_picture_type
     av_parser_parse2( helper->parser_ctx, ctx,
                       &dummy, &dummy_size, filtered_pkt.data, filtered_pkt.size,
                       pkt->pts, pkt->dts, pkt->pos );
+
+    // (h264) Not all IDR frames are suitable random access points and some might not
+    // have SPS and PPS prefixed. See AkarinVS/L-SMASH-Works#19.
+    if( helper->parser_ctx->key_frame > 1 )
+        helper->random_access_key_frame = 1;
+    if( helper->random_access_key_frame )
+    {
+        if( helper->parser_ctx->key_frame > 1 )
+            pkt->flags |= AV_PKT_FLAG_KEY;
+        else
+            pkt->flags &= ~AV_PKT_FLAG_KEY;
+    }
+
     /* One frame decoding.
      * Sometimes, the parser returns a picture type other than I-picture and BI-picture even if the frame is a keyframe.
      * Actual decoding fixes this issue.
