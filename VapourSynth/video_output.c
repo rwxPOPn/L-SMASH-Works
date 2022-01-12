@@ -991,7 +991,8 @@ int vs_setup_video_rendering
     }
     vs_vohp->direct_rendering &= vs_check_dr_available( ctx, ctx->pix_fmt );
     int (*dr_get_buffer)( struct AVCodecContext *, AVFrame *, int ) = vs_vohp->direct_rendering ? vs_video_get_buffer : NULL;
-    setup_video_rendering( lw_vohp, SWS_FAST_BILINEAR,
+    setup_video_rendering( lw_vohp,
+                           SWS_FULL_CHR_H_INT | SWS_FULL_CHR_H_INP | SWS_ACCURATE_RND | SWS_BICUBIC,
                            width, height, output_pixel_format,
                            ctx, dr_get_buffer );
     if( vs_vohp->variable_info )
