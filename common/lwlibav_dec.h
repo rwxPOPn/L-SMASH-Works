@@ -131,12 +131,10 @@ static inline int lavf_open_file
     lw_log_handler_t *lhp
 )
 {
-    *format_ctx = avformat_alloc_context();
-
     // The default of 5MB is not sufficient for UHD clips, e.g. https://4kmedia.org/lg-new-york-hdr-uhd-4k-demo/.
-    (*format_ctx)->probesize = 50*1024*1024;
-
-    if( avformat_open_input( format_ctx, file_path, NULL, NULL ) )
+    AVDictionary* prob_size = NULL;
+    av_dict_set( &prob_size, "probesize", "52428800", 0 );
+    if( avformat_open_input( format_ctx, file_path, NULL, &prob_size) )
     {
         lw_log_show( lhp, LW_LOG_FATAL, "Failed to avformat_open_input." );
         return -1;
@@ -147,6 +145,7 @@ static inline int lavf_open_file
         lw_log_show( lhp, LW_LOG_FATAL, "Failed to avformat_find_stream_info." );
         return -1;
     }
+    av_dict_free( &prob_size );
     return 0;
 }
 
