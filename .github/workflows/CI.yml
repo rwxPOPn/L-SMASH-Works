@@ -32,8 +32,17 @@ jobs:
 
     - name: Install FFmpeg
       run: |
-        git clone https://github.com/FFmpeg/FFmpeg --branch release/4.4 --depth 1
+        git clone https://github.com/AkarinVS/FFmpeg --branch lsmas --depth 1
         pushd FFmpeg
+        # If you want to build lsmas for encoding, the recommended configure
+        # arguments are as follows:
+        # --enable-gpl --enable-version3 --enable-static --disable-shared \
+        # --enable-avcodec --enable-avformat --enable-swresample --enable-swscale \
+        # --disable-programs --disable-avdevice --disable-postproc --disable-avfilter \
+        # --disable-encoders --disable-muxers --disable-doc --disable-debug \
+        # --enable-libdav1d --enable-zlib \
+        # --enable-cuvid --enable-ffnvcodec --enable-libmfx
+        # Remove the last line if you don't need hardware accelerated decoding.
         ./configure --enable-gpl --enable-version3 --disable-static --enable-shared --disable-all --disable-autodetect --enable-avcodec --enable-avformat --enable-swresample --enable-swscale --disable-asm --disable-debug
         make -j2
         sudo make install -j2
