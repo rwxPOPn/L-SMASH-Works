@@ -83,7 +83,6 @@ vs_video_output_handler_t *vs_allocate_video_output_handler
 
 void vs_set_frame_properties
 (
-    int             n,
     AVFrame        *av_frame,
     AVStream       *stream,
     int64_t         duration_num,

@@ -157,7 +157,6 @@ static void VS_CC vs_filter_init( VSMap *in, VSMap *out, void **instance_data, V
 
 static void set_frame_properties
 (
-    int          n,
     VSVideoInfo *vi,
     AVFrame     *av_frame,
     AVStream    *stream,
@@ -170,7 +169,7 @@ static void set_frame_properties
     /* Variable Frame Rate is not supported yet. */
     int64_t duration_num = vi->fpsDen;
     int64_t duration_den = vi->fpsNum;
-    vs_set_frame_properties( n, av_frame, stream, duration_num, duration_den, vs_frame, top, bottom, vsapi );
+    vs_set_frame_properties( av_frame, stream, duration_num, duration_den, vs_frame, top, bottom, vsapi );
 }
 
 static int prepare_video_decoding
@@ -295,7 +294,7 @@ static const VSFrameRef *VS_CC vs_filter_get_frame( int n, int activation_reason
         bottom = ( vohp->frame_order_list[n].bottom == vohp->frame_order_list[frame_number].bottom ) ? vohp->frame_order_list[n - 1].bottom :
             vohp->frame_order_list[n].bottom;
     }
-    set_frame_properties( n, vi, av_frame, vdhp->format->streams[vdhp->stream_index], vs_frame, top, bottom,vsapi );
+    set_frame_properties( vi, av_frame, vdhp->format->streams[vdhp->stream_index], vs_frame, top, bottom,vsapi );
     if ( n == 0 && hp->framelist )
     {
         const char *ftype = "IPB";
@@ -383,7 +382,6 @@ void VS_CC vs_lwlibavsource_create( const VSMap *in, VSMap *out, void *user_data
     int64_t apply_repeat_flag;
     int64_t field_dominance;
     int64_t ff_loglevel;
-    int64_t soft_reset;
     const char *index_file_path;
     const char *format;
     const char *preferred_decoder_names;
@@ -401,7 +399,6 @@ void VS_CC vs_lwlibavsource_create( const VSMap *in, VSMap *out, void *user_data
     set_option_int64 ( &apply_repeat_flag,       1,    "repeat",         in, vsapi );
     set_option_int64 ( &field_dominance,         0,    "dominance",      in, vsapi );
     set_option_int64 ( &ff_loglevel,             0,    "ff_loglevel",    in, vsapi );
-    set_option_int64 ( &soft_reset,              1,    "soft_reset",     in, vsapi );
     set_option_int64 ( &hp->framelist,           0,    "framelist",      in, vsapi );
     set_option_string( &index_file_path,         NULL, "cachefile",      in, vsapi );
     set_option_string( &format,                  NULL, "format",         in, vsapi );
@@ -429,7 +426,6 @@ void VS_CC vs_lwlibavsource_create( const VSMap *in, VSMap *out, void *user_data
     lwlibav_video_set_forward_seek_threshold ( vdhp, CLIP_VALUE( seek_threshold, 1, 999 ) );
     lwlibav_video_set_preferred_decoder_names( vdhp, tokenize_preferred_decoder_names( hp->preferred_decoder_names_buf ) );
     lwlibav_video_set_prefer_hw_decoder      ( vdhp, CLIP_VALUE( prefer_hw_decoder, 0, 3 ) );
-    lwlibav_video_set_soft_reset             ( vdhp, CLIP_VALUE( soft_reset, 0, 1 ) );
     vs_vohp->variable_info          = CLIP_VALUE( variable_info,     0, 1 );
     vs_vohp->direct_rendering       = CLIP_VALUE( direct_rendering,  0, 1 ) && !format;
     vs_vohp->vs_output_pixel_format = vs_vohp->variable_info ? pfNone : get_vs_output_pixel_format( format );

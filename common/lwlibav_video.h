@@ -114,12 +114,6 @@ void lwlibav_video_set_get_buffer_func
     lwlibav_video_decode_handler_t *vdhp
 );
 
-void lwlibav_video_set_soft_reset
-(
-    lwlibav_video_decode_handler_t *vdhp,
-    int                             soft_reset
-);
-
 /*****************************************************************************
  * Getters
  *****************************************************************************/
