@@ -28,6 +28,7 @@
 #include "config.h"
 
 #include <commctrl.h>
+#include <wchar.h>
 
 #include <libavutil/channel_layout.h>
 /* Version */
@@ -118,8 +119,23 @@ void au_message_box_desktop
     MessageBox( HWND_DESKTOP, message, "lwinput", uType );
 }
 
+static void set_current_dir( void )
+{
+    wchar_t path[_MAX_PATH];
+    if( GetModuleFileNameW( NULL, path, sizeof(path) ) )
+    {
+        wchar_t drive[_MAX_DRIVE]
+               ,dir  [_MAX_DIR]
+               ,_path[_MAX_PATH];
+        _wsplitpath( path, drive, dir, NULL, NULL );
+        _wmakepath( _path, drive, dir, NULL, NULL );
+        _wchdir( _path );
+    }
+}
+
 static FILE *open_settings( void )
 {
+    set_current_dir();
     FILE *ini = NULL;
     for( int i = 0; i < 2; i++ )
     {
