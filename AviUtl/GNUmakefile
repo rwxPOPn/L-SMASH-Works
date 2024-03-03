@@ -52,7 +52,7 @@ lwcolor.auc: $(OBJ_COLOR)
 	$(RC) $(RCFLAGS) $< -o $@
 
 clean:
-	$(RM) *.auf *.aui *.auc *.o *.res .depend
+	$(RM) *.auf *.aui *.auc *.o *.res .depend ../common/*.o
 
 distclean: clean
 	$(RM) config.*

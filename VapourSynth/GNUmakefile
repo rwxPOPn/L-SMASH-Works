@@ -40,7 +40,7 @@ uninstall:
     $(RM) $(addprefix $(DESTDIR), $(libdir)/$(SONAME) $(vsplugindir)/$(SONAME_LN))
 
 clean:
-    $(RM) $(SONAME) *.o .depend
+    $(RM) $(SONAME) *.o .depend ../common/*.o
 
 distclean: clean
     $(RM) config.*
