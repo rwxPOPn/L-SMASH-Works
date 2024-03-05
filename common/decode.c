@@ -147,7 +147,7 @@ int open_decoder
     if( (ret = avcodec_open2( c, codec, NULL )) < 0 )
         goto fail;
     if( is_qsv_decoder( c->codec ) )
-        if( (ret = do_qsv_decoder_workaround( c )) < 0 )
+        if( (ret = qsv_decoder_settings( c )) < 0 )
             goto fail;
     *ctx = c;
     return ret;

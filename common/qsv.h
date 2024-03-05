@@ -26,7 +26,7 @@ int is_qsv_decoder
 );
 
 /* Workarounds for Intel QuickSync Video Decoder through libavcodec */
-int do_qsv_decoder_workaround
+int qsv_decoder_settings
 (
     AVCodecContext *ctx
 );
