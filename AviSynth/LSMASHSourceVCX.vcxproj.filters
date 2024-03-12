@@ -78,6 +78,9 @@
     <ClCompile Include="..\common\osdep.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\common\xxhash.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="audio_output.h">

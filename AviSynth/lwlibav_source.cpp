@@ -222,8 +222,8 @@ PVideoFrame __stdcall LWLibavVideoSource::GetFrame( int n, IScriptEnvironment *e
             else
                 return -1;
         } ();
-
         set_frame_properties( av_frame, vdhp->format->streams[vdhp->stream_index], vi, as_frame, top, bottom, env, n );
+    }
     if ( vohp->scaler.output_pixel_format == AV_PIX_FMT_XYZ12LE )
     {
         const int pitch = as_frame->GetPitch() / 2;

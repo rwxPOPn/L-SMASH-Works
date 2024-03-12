@@ -12,4 +12,7 @@
   <PropertyGroup Label="Configuration" Condition="'$(VisualStudioVersion)' == '16.0'">
     <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(VisualStudioVersion)' == '17.0'">
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
 </Project>
