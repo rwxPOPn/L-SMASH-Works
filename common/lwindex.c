@@ -2909,9 +2909,9 @@ static int parse_index
     int64_t file_size;
     uint64_t file_hash;
     char format_name[256];
-    const int active_video_index;
-    const int active_audio_index;
-    const int default_audio;
+    int active_video_index;
+    int active_audio_index;
+    int default_audio;
 #ifdef _WIN32
     wchar_t *wname = NULL;
     struct _stat64 file_stat;
