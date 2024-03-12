@@ -27,7 +27,7 @@
 #include "../common/cpp_compat.h"
 #include "../common/utils.h"
 
-#include <avisynth.h>
+#include "../include/avisynth.h"
 
 class LSMASHSource : public IClip
 {

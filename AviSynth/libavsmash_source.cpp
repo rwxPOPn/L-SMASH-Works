@@ -546,8 +546,7 @@ AVSValue __cdecl CreateLSMASHAudioSource( AVSValue args, void *user_data, IScrip
     int         sample_rate             = args[4].AsInt( 0 );
     const char *preferred_decoder_names = args[5].AsString( nullptr );
     int         ff_loglevel             = args[6].AsInt( 0 );
-    double      drc                     = args[7].AsFloatf( 1.0f );
     set_av_log_level( ff_loglevel );
     return new LSMASHAudioSource( source, track_number, skip_priming,
-                                  layout_string, sample_rate, preferred_decoder_names, drc, env );
+                                  layout_string, sample_rate, preferred_decoder_names, env );
 }

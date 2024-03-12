@@ -224,6 +224,7 @@ PVideoFrame __stdcall LWLibavVideoSource::GetFrame( int n, IScriptEnvironment *e
         } ();
 
         set_frame_properties( av_frame, vdhp->format->streams[vdhp->stream_index], vi, as_frame, top, bottom, env, n );
+    }
     if ( vohp->scaler.output_pixel_format == AV_PIX_FMT_XYZ12LE )
     {
         const int pitch = as_frame->GetPitch() / 2;
@@ -460,5 +461,5 @@ AVSValue __cdecl CreateLWLibavAudioSource( AVSValue args, void *user_data, IScri
     opt.vfr2cfr.fps_num   = 0;
     opt.vfr2cfr.fps_den   = 0;
     set_av_log_level( ff_loglevel );
-    return new LWLibavAudioSource( &opt, layout_string, sample_rate, preferred_decoder_names, drc, progress, env );
+    return new LWLibavAudioSource( &opt, layout_string, sample_rate, preferred_decoder_names, env );
 }
