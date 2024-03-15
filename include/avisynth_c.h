@@ -307,7 +307,7 @@ enum {
   AVS_MASK_SPEAKER_RESERVED = 0x7FFC0000,
   // Used to specify that any possible permutation of speaker configurations
   // Due to lack of available bits this one is put differently into image_type
-  AVS_MASK_SPEAKER_ALL = 0x80000000
+  AVS_MASK_SPEAKER_ALL = (int)0x80000000u    // avoid warning
 };
 
 // AvsImageTypeFlags
