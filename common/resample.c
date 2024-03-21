@@ -106,10 +106,9 @@ int resample_audio(SwrContext *swr, audio_samples_t *out, audio_samples_t *in )
         request_sample_count -= resampled_count;
         *out->data += resampled_count * block_align;
     }
-    uint8_t **in_data = in->sample_count > 0 ? in->data : NULL;
-	const uint8_t **indata = (const uint8_t**)in_data;
+    const uint8_t **in_data = (const uint8_t **)( in->sample_count > 0 ? in->data : NULL );
     int resampled_count = swr_convert( swr, out->data, request_sample_count,
-                                                     indata,  in->sample_count );
+                                              in_data,     in->sample_count );
     if( resampled_count < 0 )
         return 0;
     *out->data += resampled_count * block_align;
