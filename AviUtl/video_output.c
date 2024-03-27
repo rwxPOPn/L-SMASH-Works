@@ -96,6 +96,17 @@ static output_colorspace_index determine_colorspace_conversion
         case AV_PIX_FMT_YUV444P14BE :
         case AV_PIX_FMT_GRAY10LE :
         case AV_PIX_FMT_GRAY10BE :
+        case AV_PIX_FMT_P010LE :
+        case AV_PIX_FMT_P010BE :
+        case AV_PIX_FMT_P012LE :
+        case AV_PIX_FMT_P012BE :
+        case AV_PIX_FMT_P016LE :
+        case AV_PIX_FMT_P016BE :
+        case AV_PIX_FMT_VUYX :
+        case AV_PIX_FMT_XV30LE :
+        case AV_PIX_FMT_XV30BE :
+        case AV_PIX_FMT_XV36LE :
+        case AV_PIX_FMT_XV36BE :
 #endif
             *output_pixel_format = AV_PIX_FMT_YUV444P16LE;  /* planar YUV 4:4:4, 48bpp little-endian -> YC48 */
             return OUTPUT_YC48;
