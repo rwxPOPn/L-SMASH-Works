@@ -40,10 +40,10 @@ error_exit()
 
 log_echo()
 {
-    echo $1
+    echo $1 $2
     echo >> config.log
     echo --------------------------------- >> config.log
-    echo $1 >> config.log
+    echo $2 >> config.log
 }
 
 cc_check()
@@ -93,7 +93,7 @@ DESTDIR=""
 
 CFLAGS="-Wall -std=c99 -pedantic -I. -I$SRCDIR -I../include"
 LDFLAGS="-L."
-DEPLIBS="liblsmash libavformat libavcodec libswscale libavutil"
+DEPLIBS="liblsmash libavformat libavcodec libswscale libswresample libavutil"
 
 SRC_SOURCE="lsmashsource.c video_output.c libavsmash_source.c lwlibav_source.c  \
             ../common/utils.c  ../common/qsv.c ../common/libavsmash.c           \
@@ -205,7 +205,7 @@ for f in "$CC" "$LD" "$STRIP"; do
 done
 
 # -- check & set cflags and ldflags  ----------------------------------------------------------
-log_echo "CFLAGS/LDFLAGS checking..."
+log_echo -e "CFLAGS/LDFLAGS checking..."
 if ! cc_check "$CFLAGS" "$LDFLAGS"; then
     error_exit "invalid CFLAGS/LDFLAGS"
 fi
@@ -224,37 +224,47 @@ test -n "$(which ${CROSS}${PKGCONFIGEXE} 2> /dev/null)" && \
 if $PKGCONFIGEXE --exists $DEPLIBS 2> /dev/null; then
     LIBS="$($PKGCONFIGEXE --libs $DEPLIBS)"
     CFLAGS="$CFLAGS $($PKGCONFIGEXE --cflags $DEPLIBS)"
+    ECHO_ARG="-n"
 else
     for lib in $DEPLIBS; do
         LIBS="$LIBS -l${lib#lib}"
     done
     log_echo "warning: pkg-config or pc files not found, lib detection may be inaccurate."
+    ECHO_ARG="-e"
 fi
 
 # -- check lsmash -----------------------------------------------------------------------------
-log_echo "checking for liblsmash..."
+log_echo $ECHO_ARG "checking for liblsmash..."
 if ! cc_check "$CFLAGS" "$LDFLAGS $LIBS $XLIBS" "lsmash.h" "lsmash_create_root();" ; then
-    log_echo "error: liblsmash checking failed"
+    log_echo -e "error: liblsmash checking failed"
     error_exit "lsmash.h might not be installed or some libs missing."
+elif VER_LSMASH="$(pkg-config --modversion liblsmash 2> /dev/null)" ; then
+    echo "$VER_LSMASH" | tee -a ./config.log
 fi
 
 # -- check libav ------------------------------------------------------------------------------
-log_echo "checking for libavformat..."
+log_echo $ECHO_ARG "checking for libavformat..."
 if ! cc_check "$CFLAGS" "$LDFLAGS $LIBS $XLIBS" "libavformat/avformat.h" "avformat_find_stream_info(0,0);" ; then
-    log_echo "error: libavformat checking failed."
+    log_echo -e "error: libavformat checking failed."
     error_exit "libavformat/avformat.h might not be installed or some libs missing."
+elif VER_FORMAT="$(pkg-config --modversion libavformat 2> /dev/null)" ; then
+    echo "$VER_FORMAT" | tee -a ./config.log
 fi
 
-log_echo "checking for libavcodec..."
+log_echo $ECHO_ARG "checking for libavcodec..."
 if ! cc_check "$CFLAGS" "$LDFLAGS $LIBS $XLIBS" "libavcodec/avcodec.h" "avcodec_find_decoder(0);" ; then
-    log_echo "error: libavcodec checking failed."
+    log_echo -e "error: libavcodec checking failed."
     error_exit "libavcodec/avcodec.h might not be installed or some libs missing."
+elif VER_CODEC="$(pkg-config --modversion libavcodec 2> /dev/null)" ; then
+    echo "$VER_CODEC" | tee -a ./config.log
 fi
 
-log_echo "checking for libswscale..."
+log_echo $ECHO_ARG "checking for libswscale..."
 if ! cc_check "$CFLAGS" "$LDFLAGS $LIBS $XLIBS" "libswscale/swscale.h" "sws_getCachedContext(0,0,0,0,0,0,0,0,0,0,0);" ; then
-    log_echo "error: libswscale checking failed."
+    log_echo -e "error: libswscale checking failed."
     error_exit "libswscale/swscale.h might not be installed or some libs missing."
+elif VER_SWSCALE="$(pkg-config --modversion libswscale 2> /dev/null)" ; then
+    echo "$VER_SWSCALE" | tee -a ./config.log
 fi
 
 # -- LDFLAGS settings --------------------------------------------------------------------------
