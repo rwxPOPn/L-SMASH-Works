@@ -926,7 +926,7 @@ void update_configuration
             codecpar->sample_rate           = config->queue.sample_rate     ? config->queue.sample_rate     : audio->frequency;
             codecpar->bits_per_coded_sample = config->queue.bits_per_sample ? config->queue.bits_per_sample : audio->sample_size;
             char buf[128];
-            int n = sprintf(buf, "%d", config->queue.channels ? config->queue.channels : audio->channels);
+            sprintf_s(buf, sizeof(buf), "%d", config->queue.channels ? config->queue.channels : audio->channels);
             av_channel_layout_from_string(&codecpar->ch_layout, buf);
         }
         if( codec->id == AV_CODEC_ID_DTS )

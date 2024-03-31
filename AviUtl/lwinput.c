@@ -54,7 +54,7 @@ static char plugin_information[512] = { 0 };
 
 static void get_plugin_information( void )
 {
-    sprintf( plugin_information,
+    sprintf_s( plugin_information, sizeof(plugin_information),
              "L-SMASH Works File Reader r%s\n"
              "    libavutil %s : %s\n"
              "    libavcodec %s : %s\n"
@@ -590,7 +590,7 @@ static void set_int_to_dlg
 )
 {
     char edit_buf[512];
-    sprintf( edit_buf, "%d", value );
+    sprintf_s( edit_buf, sizeof(edit_buf), "%d", value );
     SetDlgItemText( hwnd, idc, (LPCTSTR)edit_buf );
 }
 
@@ -643,7 +643,7 @@ static void send_mix_level
     SendMessage( hslider, TBM_SETPOS,      TRUE, mix_level );
     SendMessage( hslider, TBM_SETLINESIZE, 0,    1 );
     SendMessage( hslider, TBM_SETPAGESIZE, 0,    1 );
-    sprintf( edit_buf, "%.2f", mix_level / 100.0 );
+    sprintf_s( edit_buf, sizeof(edit_buf), "%.2f", mix_level / 100.0 );
     SetWindowText( GetDlgItem( hwnd, text_idc ), (LPCTSTR)edit_buf );
 }
 
@@ -658,7 +658,7 @@ static void get_mix_level
     char edit_buf[512];
     HWND hslider = GetDlgItem( hwnd, slider_idc );
     *mix_level = SendMessage( hslider, TBM_GETPOS, 0, 0 );
-    sprintf( edit_buf, "%.2f", *mix_level / 100.0 );
+    sprintf_s( edit_buf, sizeof(edit_buf), "%.2f", *mix_level / 100.0 );
     SetWindowText( GetDlgItem( hwnd, text_idc ), (LPCTSTR)edit_buf );
 }
 

@@ -83,7 +83,7 @@ int update_progress_dlg( progress_dlg_t *dlg, const char *mes, int progress_perc
             dlg->progress_percent = progress_percent;
             progress_percent      = min( progress_percent, 100 );
             char window_mes[256];
-            sprintf( window_mes, "%s... %d %%", mes, progress_percent );
+            sprintf_s( window_mes, sizeof(window_mes), "%s... %d %%", mes, progress_percent );
             if( !IsWindowVisible( dlg->hnd ) )
                 ShowWindow( dlg->hnd, SW_SHOW );
             HWND window_text = GetDlgItem( dlg->hnd, IDC_PERCENT_TEXT );

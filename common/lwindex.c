@@ -2076,7 +2076,7 @@ const char *lwindex_version_header() {
         (LWINDEX_VERSION >>  8) & 0xff,
         LWINDEX_VERSION        & 0xff
     };
-    sprintf( buffer, "<LSMASHWorksIndexVersion=%" PRIu8 ".%" PRIu8 ".%" PRIu8 ".%" PRIu8 ">\n"
+    sprintf_s( buffer, sizeof(buffer), "<LSMASHWorksIndexVersion=%" PRIu8 ".%" PRIu8 ".%" PRIu8 ".%" PRIu8 ">\n"
                      "<LibavReaderIndexFile=%d>\n",
             lwindex_version[0], lwindex_version[1], lwindex_version[2], lwindex_version[3],
             LWINDEX_INDEX_FILE_VERSION );
