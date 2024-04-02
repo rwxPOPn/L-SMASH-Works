@@ -93,7 +93,7 @@ DESTDIR=""
 
 CFLAGS="-Wall -std=c99 -pedantic -I. -I$SRCDIR -I../include"
 LDFLAGS="-L."
-DEPLIBS="liblsmash libavformat libavcodec libswscale libavutil"
+DEPLIBS="liblsmash libavformat libavcodec libswscale libswresample libavutil"
 
 SRC_SOURCE="lsmashsource.c video_output.c libavsmash_source.c lwlibav_source.c  \
             ../common/utils.c  ../common/qsv.c ../common/libavsmash.c           \

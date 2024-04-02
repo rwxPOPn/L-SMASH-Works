@@ -20,30 +20,30 @@ endif
 all: $(SONAME)
 
 $(SONAME): $(OBJ_SOURCE)
-    $(LD) $(SOFLAGS) $(LDFLAGS) -o $@ $^ $(LIBS)
-    -@ $(if $(STRIP), $(STRIP) -x $@)
+	$(LD) $(SOFLAGS) $(LDFLAGS) -o $@ $^ $(LIBS)
+	-@ $(if $(STRIP), $(STRIP) -x $@)
 
 %.o: %.c .depend
-    $(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -c $< -o $@
 
 install: all
-    install -d $(DESTDIR)$(libdir) $(DESTDIR)$(vsplugindir)
+	install -d $(DESTDIR)$(libdir) $(DESTDIR)$(vsplugindir)
 ifneq ($(IMPLIB),)
-    install -m 644 $(IMPLIB) $(DESTDIR)$(libdir)
+	install -m 644 $(IMPLIB) $(DESTDIR)$(libdir)
 else
-    install -m 644 $(SONAME) $(DESTDIR)$(libdir)/$(SONAME)
-    $(if $(SONAME), ln -f -s $(libdir)/$(SONAME) $(DESTDIR)$(vsplugindir)/$(SONAME_LN))
+	install -m 644 $(SONAME) $(DESTDIR)$(libdir)/$(SONAME)
+	$(if $(SONAME), ln -f -s $(libdir)/$(SONAME) $(DESTDIR)$(vsplugindir)/$(SONAME_LN))
 endif
 
 #All objects should be deleted regardless of configure when uninstall/clean/distclean.
 uninstall:
-    $(RM) $(addprefix $(DESTDIR), $(libdir)/$(SONAME) $(vsplugindir)/$(SONAME_LN))
+	$(RM) $(addprefix $(DESTDIR), $(libdir)/$(SONAME) $(vsplugindir)/$(SONAME_LN))
 
 clean:
-    $(RM) $(SONAME) *.o .depend ../common/*.o
+	$(RM) $(SONAME) *.o .depend ../common/*.o
 
 distclean: clean
-    $(RM) config.*
+	$(RM) config.*
 
 dep: .depend
 
@@ -52,8 +52,8 @@ include .depend
 endif
 
 .depend: config.mak
-    @$(RM) .depend
-    @$(foreach SRC, $(SRC_ALL:%=$(SRCDIR)/%), $(CC) $(SRC) $(CFLAGS) -msse2 -g0 -MT $(SRC:$(SRCDIR)/%.c=%.o) -MM >> .depend;)
+	@$(RM) .depend
+	@$(foreach SRC, $(SRC_ALL:%=$(SRCDIR)/%), $(CC) $(SRC) $(CFLAGS) -msse2 -g0 -MT $(SRC:$(SRCDIR)/%.c=%.o) -MM >> .depend;)
 
 config.mak:
-    configure
+	configure
