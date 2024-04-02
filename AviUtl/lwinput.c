@@ -265,8 +265,8 @@ static void get_settings( void )
         if( !fgets( buf, sizeof(buf), ini ) || sscanf( buf, "audio_delay=%d", &audio_delay ) != 1 )
             audio_delay = 0;
         /* channel_layout */
-        if( !fgets( buf, sizeof(buf), ini ) || sscanf( buf, "channel_layout=0x%"SCNx64, &audio_opt->channel_layout ) != 1 )
-            audio_opt->channel_layout = 0;
+        if( !fgets( buf, sizeof(buf), ini ) || sscanf( buf, "channel_layout=0x%"SCNx64, &audio_opt->channel_layout.u.mask ) != 1 )
+            audio_opt->channel_layout.u.mask = 0;
         /* sample_rate */
         if( !fgets( buf, sizeof(buf), ini ) || sscanf( buf, "sample_rate=%d", &audio_opt->sample_rate ) != 1 )
             audio_opt->sample_rate = 0;
@@ -724,16 +724,17 @@ static BOOL CALLBACK dialog_proc
             /* audio_delay */
             set_int_to_dlg( hwnd, IDC_EDIT_AUDIO_DELAY, audio_delay );
             /* channel_layout */
-            if( audio_opt->channel_layout )
+            if( audio_opt->channel_layout.u.mask )
             {
                 char edit_buf[512] = { 0 };
                 char *buf = edit_buf;
                 for( int i = 0; i < 64; i++ )
                 {
-                    uint64_t audio_channel = audio_opt->channel_layout & (1ULL << i);
-                    if( audio_channel )
+                    if( audio_opt->channel_layout.u.mask & (1ULL << i) )
                     {
-                        const char *channel_name = av_get_channel_name( audio_channel );
+                        char cn_buf[8];
+                        av_channel_name( cn_buf, sizeof(cn_buf), i );
+                        const char *channel_name = cn_buf;
                         if( channel_name )
                         {
                             int name_length = strlen( channel_name );
@@ -914,9 +915,10 @@ static BOOL CALLBACK dialog_proc
                     {
                         char edit_buf[512];
                         GetDlgItemText( hwnd, IDC_EDIT_CHANNEL_LAYOUT, (LPTSTR)edit_buf, sizeof(edit_buf) );
-                        audio_opt->channel_layout = av_get_channel_layout( edit_buf );
+                        if( av_channel_layout_from_string( &audio_opt->channel_layout, edit_buf ) )
+                            audio_opt->channel_layout.u.mask = 0;
+                        fprintf( ini, "channel_layout=0x%"PRIx64"\n", audio_opt->channel_layout.u.mask );
                     }
-                    fprintf( ini, "channel_layout=0x%"PRIx64"\n", audio_opt->channel_layout );
                     /* sample_rate */
                     audio_opt->sample_rate = get_int_from_dlg_with_min( hwnd, IDC_EDIT_SAMPLE_RATE, 0 );
                     fprintf( ini, "sample_rate=%d\n", audio_opt->sample_rate );

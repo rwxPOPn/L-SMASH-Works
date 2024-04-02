@@ -28,6 +28,8 @@
 #include <windows.h>
 #include <mmreg.h>
 
+#include <libavutil/channel_layout.h>
+
 #include "input.h"
 
 #include "lwcolor.h"
@@ -110,9 +112,9 @@ enum
 
 typedef struct
 {
-    uint64_t channel_layout;
-    int      sample_rate;
-    int      mix_level[3];      /* { Center, Surround, LFE } */
+    AVChannelLayout channel_layout;
+    int             sample_rate;
+    int             mix_level[3];      /* { Center, Surround, LFE } */
 } audio_option_t;
 
 typedef struct
