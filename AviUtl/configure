@@ -18,6 +18,10 @@ options:
   --debug-video            debug video (-DDEBUG_VIDEO)
   --debug-audio            debug audio (-DDEBUG_AUDIO)
 
+  --ff-dir=FF_DIR          set dir for FFmpeg  [NONE]
+                               Add FFmpeg version and revision to the information of L-SMASH Works.
+                               Specify FFmpeg directory using an absolute or relative path.
+
   --extra-cflags=XCFLAGS   add XCFLAGS to CFLAGS
   --extra-ldflags=XLDFLAGS add XLDFLAGS to LDFLAGS
   --extra-libs=XLIBS       add XLIBS to LIBS
@@ -38,10 +42,10 @@ error_exit()
 
 log_echo()
 {
-    echo $1
+    echo $1 $2
     echo >> config.log
     echo --------------------------------- >> config.log
-    echo $1 >> config.log
+    echo $2 >> config.log
 }
 
 cc_check()
@@ -117,6 +121,9 @@ for opt; do
         --debug-audio)
             CFLAGS="$CFLAGS -DDEBUG_AUDIO"
             ;;
+        --ff-dir=*)
+            FF_DIR="$optarg"
+            ;;
         --extra-cflags=*)
             XCFLAGS="$optarg"
             ;;
@@ -160,7 +167,7 @@ for f in "$CC" "$LD" "$RC" "$STRIP"; do
 done
 
 # -- check & set cflags and ldflags  ----------------------------------------------------------
-log_echo "CFLAGS/LDFLAGS checking..."
+log_echo -e "CFLAGS/LDFLAGS checking..."
 if ! cc_check "$CFLAGS" "$LDFLAGS"; then
     error_exit "invalid CFLAGS/LDFLAGS"
 fi
@@ -179,55 +186,75 @@ test -n "$(which ${CROSS}${PKGCONFIGEXE} 2> /dev/null)" && \
 if $PKGCONFIGEXE --exists $DEPLIBS 2> /dev/null; then
     LIBS="$($PKGCONFIGEXE --libs $DEPLIBS)"
     CFLAGS="$CFLAGS $($PKGCONFIGEXE --cflags $DEPLIBS)"
+    ECHO_ARG="-n"
 else
     for lib in $DEPLIBS; do
         LIBS="$LIBS -l${lib#lib}"
     done
-    log_echo "warning: pkg-config or pc files not found, lib detection may be inaccurate."
+    log_echo -e "warning: pkg-config or pc files not found, lib detection may be inaccurate."
+    ECHO_ARG="-e"
 fi
 
 # -- check lsmash -----------------------------------------------------------------------------
-log_echo "checking for liblsmash..."
+log_echo $ECHO_ARG "checking for liblsmash..."
 if ! cc_check "$CFLAGS" "$LDFLAGS $LIBS $XLIBS" "lsmash.h" "lsmash_create_root();" ; then
-    log_echo "error: liblsmash checking failed"
+    log_echo -e "error: liblsmash checking failed"
     error_exit "lsmash.h might not be installed or some libs missing."
+elif VER_LSMASH="$(pkg-config --modversion liblsmash 2> /dev/null)" ; then
+    echo "$VER_LSMASH" | tee -a ./config.log
 fi
 
 # -- check libav ------------------------------------------------------------------------------
-log_echo "checking for libavformat..."
+log_echo $ECHO_ARG "checking for libavformat..."
 if ! cc_check "$CFLAGS" "$LDFLAGS $LIBS $XLIBS" "libavformat/avformat.h" "avformat_find_stream_info(0,0);" ; then
-    log_echo "error: libavformat checking failed."
+    log_echo -e "error: libavformat checking failed."
     error_exit "libavformat/avformat.h might not be installed or some libs missing."
+elif VER_FORMAT="$(pkg-config --modversion libavformat 2> /dev/null)" ; then
+    echo "$VER_FORMAT" | tee -a ./config.log
 fi
 
-log_echo "checking for libavcodec..."
+log_echo $ECHO_ARG "checking for libavcodec..."
 if ! cc_check "$CFLAGS" "$LDFLAGS $LIBS $XLIBS" "libavcodec/avcodec.h" "avcodec_find_decoder(0);" ; then
-    log_echo "error: libavcodec checking failed."
+    log_echo -e "error: libavcodec checking failed."
     error_exit "libavcodec/avcodec.h might not be installed or some libs missing."
+elif VER_CODEC="$(pkg-config --modversion libavcodec 2> /dev/null)" ; then
+    echo "$VER_CODEC" | tee -a ./config.log
 fi
 
-log_echo "checking for libswscale..."
+log_echo $ECHO_ARG "checking for libswscale..."
 if ! cc_check "$CFLAGS" "$LDFLAGS $LIBS $XLIBS" "libswscale/swscale.h" "sws_getCachedContext(0,0,0,0,0,0,0,0,0,0,0);" ; then
-    log_echo "error: libswscale checking failed."
+    log_echo -e "error: libswscale checking failed."
     error_exit "libswscale/swscale.h might not be installed or some libs missing."
+elif VER_SWSCALE="$(pkg-config --modversion libswscale 2> /dev/null)" ; then
+    echo "$VER_SWSCALE" | tee -a ./config.log
 fi
 
-log_echo "checking for libswresample..."
+log_echo $ECHO_ARG "checking for libswresample..."
 if ! cc_check "$CFLAGS" "$LDFLAGS $LIBS $XLIBS" "libswresample/swresample.h" "swr_init(0);" ; then
-    log_echo "error: libswresample checking failed."
+    log_echo -e "error: libswresample checking failed."
     error_exit "libswresample/swresample.h might not be installed or some libs missing."
+elif VER_SWRESAMPLE="$(pkg-config --modversion libswresample 2> /dev/null)" ; then
+    echo "$VER_SWRESAMPLE" | tee -a ./config.log
 fi
 
 LDFLAGS="$AU_LDFLAGS $LDFLAGS"
 LIBS="-lcomctl32 -lwinmm -lgdi32 $LIBS $XLIBS"
 
 # -- output config.h --------------------------------------------------------------------------
-pushd $SRCDIR
+if [ ! -z $FF_DIR -a -d $FF_DIR ]; then
+    pushd $FF_DIR > /dev/null 2>&1
+    FF_VER=" / v$(cat ./RELEASE 2> /dev/null)"
+    FF_REV="-$(git rev-list --count HEAD 2> /dev/null)"
+    FF_HASH="$(git show --format='%h' --no-patch 2> /dev/null)"
+    popd > /dev/null 2>&1
+fi
+
+pushd $SRCDIR > /dev/null 2>&1
 REV="$(git rev-list --count HEAD 2> /dev/null)"
 HASH="$(git rev-parse --short HEAD 2> /dev/null)"
-popd
+popd > /dev/null 2>&1
 cat >> config.h << EOF
-#define LSMASHWORKS_REV "$REV"
+#define LSMASHWORKS_REV "$REV$FF_VER$FF_REV"
 #define LSMASHWORKS_GIT_HASH "$HASH"
 EOF
 
@@ -268,6 +295,20 @@ LIBS        = $LIBS
 EOF
 
 test "$SRCDIR" = "." || cp -f $SRCDIR/GNUmakefile .
+
+# ---------------------------------------------------------------------------------------------
+
+cat << EOF
+
+L-SMASH Works and FFmpeg information.
+    L-SMASH Works 
+       Rev. = $REV
+       hash = $HASH
+    FFmpeg
+       Ver. = ${FF_VER##*v}
+       Rev. = ${FF_REV##-}
+       hash = $FF_HASH
+EOF
 
 # ---------------------------------------------------------------------------------------------
 
