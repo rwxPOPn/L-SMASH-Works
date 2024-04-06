@@ -389,6 +389,7 @@ static enum AVCodecID get_codec_id_from_description
         ELSE_IF_GET_CODEC_ID_FROM_CODEC_TYPE( AV_CODEC_ID_AMR_NB,      ISOM_CODEC_TYPE_SAMR_AUDIO );
         ELSE_IF_GET_CODEC_ID_FROM_CODEC_TYPE( AV_CODEC_ID_AMR_WB,      ISOM_CODEC_TYPE_SAWB_AUDIO );
         ELSE_IF_GET_CODEC_ID_FROM_CODEC_TYPE( AV_CODEC_ID_ALAC,        ISOM_CODEC_TYPE_ALAC_AUDIO );
+        ELSE_IF_GET_CODEC_ID_FROM_CODEC_TYPE( AV_CODEC_ID_OPUS,        ISOM_CODEC_TYPE_OPUS_AUDIO );
         ELSE_IF_GET_CODEC_ID_FROM_CODEC_TYPE( AV_CODEC_ID_ALAC,          QT_CODEC_TYPE_ALAC_AUDIO );
         ELSE_IF_GET_CODEC_ID_FROM_CODEC_TYPE( AV_CODEC_ID_MACE3,         QT_CODEC_TYPE_MAC3_AUDIO );
         ELSE_IF_GET_CODEC_ID_FROM_CODEC_TYPE( AV_CODEC_ID_MACE6,         QT_CODEC_TYPE_MAC6_AUDIO );
@@ -545,6 +546,11 @@ static lsmash_codec_specific_data_type get_codec_specific_data_type
     {
         *format2 = LSMASH_CODEC_SPECIFIC_FORMAT_STRUCTURED;
         return LSMASH_CODEC_SPECIFIC_DATA_TYPE_ISOM_AUDIO_DTS;
+    }
+    else if( lsmash_check_codec_type_identical( codec_type, ISOM_CODEC_TYPE_OPUS_AUDIO ) )
+    {
+        *format2 = LSMASH_CODEC_SPECIFIC_FORMAT_STRUCTURED;
+        return LSMASH_CODEC_SPECIFIC_DATA_TYPE_ISOM_AUDIO_OPUS;
     }
     else if( lsmash_check_codec_type_identical( codec_type, QT_CODEC_TYPE_ULRA_VIDEO )
           || lsmash_check_codec_type_identical( codec_type, QT_CODEC_TYPE_ULRG_VIDEO )
@@ -728,6 +734,14 @@ static int prepare_new_decoder_configuration
             /* Here, assume that libavcodec's DTS decoder doesn't support X96, XXCH, LBR and XLL extensions. */
             lsmash_dts_specific_parameters_t *dts = (lsmash_dts_specific_parameters_t *)cs2->data.structured;
             config->queue.bits_per_sample = dts->pcmSampleDepth;
+        }
+        else if( cs_type == LSMASH_CODEC_SPECIFIC_DATA_TYPE_ISOM_AUDIO_OPUS )
+        {
+            lsmash_opus_specific_parameters_t *opus = (lsmash_opus_specific_parameters_t *)cs2->data.structured;
+            config->queue.bits_per_sample = 0;
+            config->queue.channels        = opus->OutputChannelCount;
+            config->queue.sample_rate     = opus->InputSampleRate;
+            config->delay_count           = opus->PreSkip;        // Do not queue priming samples.
         }
     }
     config->queue.index = new_index;
@@ -920,7 +934,7 @@ void update_configuration
     }
     else
     {
-        if( codec->id != AV_CODEC_ID_AAC && codec->id != AV_CODEC_ID_DTS && codec->id != AV_CODEC_ID_EAC3 )
+        if( codec->id != AV_CODEC_ID_AAC && codec->id != AV_CODEC_ID_DTS && codec->id != AV_CODEC_ID_EAC3 && codec->id != AV_CODEC_ID_OPUS )
         {
             lsmash_audio_summary_t *audio = (lsmash_audio_summary_t *)summary;
             codecpar->sample_rate           = config->queue.sample_rate     ? config->queue.sample_rate     : audio->frequency;
