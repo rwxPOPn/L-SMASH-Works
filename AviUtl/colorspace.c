@@ -168,7 +168,7 @@ static void inline __attribute__((always_inline)) convert_yuv420ple_i_to_yuv444p
         const int src_line_len = pic_linesize[i_color] / sizeof(uint16_t);
         /* first 2 lines */
         int x;
-        uint16_t tmp[2][4];
+        uint16_t tmp[2][4] = { 0 };
         uint64_t *tmp0 = (uint64_t *)tmp[0], *tmp1 = (uint64_t *)tmp[1];
 
     /* this inner loop branch should be deleted by forced inline expansion and "lshft" constant propagation. */
