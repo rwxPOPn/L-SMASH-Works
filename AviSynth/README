@@ -197,19 +197,19 @@
                             2.1            = 0xb           = 11            = FL+FR+LFE
                             3.0            = 0x7           = 7             = FL+FR+FC
                             3.0(back)      = 0x103         = 259           = FL+FR+BC
-                            3.1            = 0xf           = 15            = FL+FR+FC+LFE
                             4.0            = 0x107         = 263           = FL+FR+FC+BC
                             quad           = 0x33          = 51            = FL+FR+BL+BR
                             quad(side)     = 0x603         = 1539          = FL+FR+SL+SR
-                            4.1            = 0x10f         = 271           = FL+FR+FC+LFE+BC
+                            3.1            = 0xf           = 15            = FL+FR+FC+LFE
                             5.0            = 0x37          = 55            = FL+FR+FC+BL+BR
                             5.0(side)      = 0x607         = 1543          = FL+FR+FC+SL+SR
+                            4.1            = 0x10f         = 271           = FL+FR+FC+LFE+BC
                             5.1            = 0x3f          = 63            = FL+FR+FC+LFE+BL+BR
                             5.1(side)      = 0x60f         = 1551          = FL+FR+FC+LFE+SL+SR
                             6.0            = 0x707         = 1799          = FL+FR+FC+BC+SL+SR
                             6.0(front)     = 0x6c3         = 1731          = FL+FR+FLC+FRC+SL+SR
-                            hexagonal      = 0x137         = 311           = FL+FR+FC+BL+BR+BC
                             3.1.2          = 0x500f        = 20495         = FL+FR+FC+LFE+TFL+TFR
+                            hexagonal      = 0x137         = 311           = FL+FR+FC+BL+BR+BC
                             6.1            = 0x70f         = 1807          = FL+FR+FC+LFE+BC+SL+SR
                             6.1(back)      = 0x13f         = 319           = FL+FR+FC+LFE+BL+BR+BC
                             6.1(front)     = 0x6cb         = 1739          = FL+FR+LFE+FLC+FRC+SL+SR
@@ -218,12 +218,14 @@
                             7.1            = 0x63f         = 1599          = FL+FR+FC+LFE+BL+BR+SL+SR
                             7.1(wide)      = 0xff          = 255           = FL+FR+FC+LFE+BL+BR+FLC+FRC
                             7.1(wide-side) = 0x6cf         = 1743          = FL+FR+FC+LFE+FLC+FRC+SL+SR
-                            octagonal      = 0x737         = 1847          = FL+FR+FC+BL+BR+BC+SL+SR
                             5.1.2          = 0x503f        = 20543         = FL+FR+FC+LFE+BL+BR+TFL+TFR
+                            octagonal      = 0x737         = 1847          = FL+FR+FC+BL+BR+BC+SL+SR
                             cube           = 0x2d033       = 184371        = FL+FR+BL+BR+TFL+TFR+TBL+TBR
                             5.1.4          = 0x2d03f       = 184383        = FL+FR+FC+LFE+BL+BR+TFL+TFR+TBL+TBR
                             7.1.2          = 0x563f        = 22079         = FL+FR+FC+LFE+BL+BR+SL+SR+TFL+TFR
                             7.1.4          = 0x2d63f       = 185919        = FL+FR+FC+LFE+BL+BR+SL+SR+TFL+TFR+TBL+TBR
+                            7.2.3          = 0x80001563f   = 34359825983   = FL+FR+FC+LFE+BL+BR+SL+SR+TFL+TFR+TBC+LFE2
+                            9.1.4          = 0x2d6ff       = 186111        = FL+FR+FC+LFE+BL+BR+FLC+FRC+SL+SR+TFL+TFR+TBL+TBR
                             hexadecagonal  = 0x18003f737   = 6442710839    = FL+FR+FC+BL+BR+BC+SL+SR+TFL+TFC+TFR+TBL+TBC+TBR+WL+WR
                             22.2           = 0x1f80003ffff = 2164663779327 = FL+FR+FC+LFE+BL+BR+FLC+FRC+BC+SL+SR+TC+TFL+TFC+TFR+TBL+TBC+TBR+LFE2+TSL+TSR+BFC+BFL+BFR
                             downmix        = 0x60000000    = 1610612736    = DL+DR
