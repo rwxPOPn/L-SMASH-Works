@@ -63,10 +63,10 @@ void as_setup_audio_rendering
 )
 {
     /* Channel layout. */
-    if ( channel_layout )
-        av_channel_layout_from_string( &aohp->output_channel_layout, channel_layout );
-    else
+    if( channel_layout == NULL || *channel_layout == '\0' || !strcmp( channel_layout, "0" ) )
         av_channel_layout_default( &aohp->output_channel_layout, ctx->ch_layout.nb_channels );
+    else if( av_channel_layout_from_string( &aohp->output_channel_layout, channel_layout ) != 0 )
+        env->ThrowError( "%s: invalid channel layout.", filter_name );
     /* Sample rate. */
     if( sample_rate > 0 )
         aohp->output_sample_rate = sample_rate;
