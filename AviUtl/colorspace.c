@@ -481,7 +481,7 @@ int to_yuy2
     lw_video_scaler_handler_t *vshp    = &vohp->scaler;
     au_video_output_handler_t *au_vohp = (au_video_output_handler_t *)vohp->private_handler;
     int output_rowsize = 0;
-    if( picture->flags & AV_FRAME_FLAG_INTERLACED
+    if( (int)&vohp->frame_cache_buffers[0]->flags & AV_FRAME_FLAG_INTERLACED
      && ((picture->format == AV_PIX_FMT_YUV420P)
      ||  (picture->format == AV_PIX_FMT_YUVJ420P)
      ||  (picture->format == AV_PIX_FMT_NV12)
