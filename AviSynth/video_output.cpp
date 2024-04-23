@@ -479,6 +479,8 @@ static int determine_colorspace_conversion
             { AV_PIX_FMT_Y210BE,       AV_PIX_FMT_YUV422P10LE,  VideoInfo::CS_YUV422P10,  2, 1, 0 },
             { AV_PIX_FMT_YUV422P12LE,  AV_PIX_FMT_YUV422P12LE,  VideoInfo::CS_YUV422P12,  4, 1, 0 },
             { AV_PIX_FMT_YUV422P12BE,  AV_PIX_FMT_YUV422P12LE,  VideoInfo::CS_YUV422P12,  4, 1, 0 },
+            { AV_PIX_FMT_Y212LE,       AV_PIX_FMT_YUV422P12LE,  VideoInfo::CS_YUV422P12,  4, 1, 0 },
+            { AV_PIX_FMT_Y212BE,       AV_PIX_FMT_YUV422P12LE,  VideoInfo::CS_YUV422P12,  4, 1, 0 },
             { AV_PIX_FMT_YUV422P14LE,  AV_PIX_FMT_YUV422P14LE,  VideoInfo::CS_YUV422P14,  6, 1, 0 },
             { AV_PIX_FMT_YUV422P14BE,  AV_PIX_FMT_YUV422P14LE,  VideoInfo::CS_YUV422P14,  6, 1, 0 },
             { AV_PIX_FMT_YUV422P16LE,  AV_PIX_FMT_YUV422P16LE,  VideoInfo::CS_YUV422P16,  8, 1, 0 },

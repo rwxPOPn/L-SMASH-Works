@@ -632,6 +632,8 @@ static int determine_colorspace_conversion
             { AV_PIX_FMT_P012BE,       pfYUV420P12, 1 },
             { AV_PIX_FMT_YUV422P12LE,  pfYUV422P12, 0 },
             { AV_PIX_FMT_YUV422P12BE,  pfYUV422P12, 1 },
+            { AV_PIX_FMT_Y212LE,       pfYUV422P12, 1 },
+            { AV_PIX_FMT_Y212BE,       pfYUV422P12, 1 },
             { AV_PIX_FMT_YUV444P12LE,  pfYUV444P12, 0 },
             { AV_PIX_FMT_YUV444P12BE,  pfYUV444P12, 1 },
             { AV_PIX_FMT_XV36LE,       pfYUV444P12, 1 },
