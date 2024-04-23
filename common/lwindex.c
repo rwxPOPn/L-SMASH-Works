@@ -1782,16 +1782,14 @@ static int get_picture_type
  * the libavcodec VC-1 decoder handles both 1 and 2 ticks_per_frame patterns and it can be determined after encountering the
  * sequence header, but it is set up by extradata, which you get from AVCodecParameters, at the decoder initialization, so it
  * should be available safely. */
-static int get_ticks_per_frame
+static uint8_t get_ticks_per_frame
 (
     AVCodecContext *ctx
 )
 {
-    if( ctx->codec_id == AV_CODEC_ID_MPEG2VIDEO || ctx->codec_id == AV_CODEC_ID_H264 )
-        return 2;
-    else if( ctx->codec_id == AV_CODEC_ID_MPEG1VIDEO )
+    if( ctx->codec_id == AV_CODEC_ID_MPEG1VIDEO )
         return 1;
-    return ctx->ticks_per_frame;
+    return ctx->codec_descriptor->props & AV_CODEC_PROP_FIELDS ? 2 : 1;
 }
 
 static int get_audio_frame_length
